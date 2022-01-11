@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import json
+import uuid
 from copy import deepcopy
 from hashlib import sha1
 from pathlib import Path
@@ -310,11 +311,13 @@ def generate_build_json(
         if contract_alias in build_json and not output_evm["deployedBytecode"]["object"]:
             continue
 
+        unique_contract_alias = contract_alias + "-" +  str(uuid.uuid4())
+
         if input_json["language"] == "Solidity":
             contract_node = next(
                 i[contract_name] for i in source_nodes if i.absolutePath == path_str
             )
-            build_json[contract_alias] = solidity._get_unique_build_json(
+            build_json[unique_contract_alias] = solidity._get_unique_build_json(
                 output_evm,
                 contract_node,
                 statement_nodes,
@@ -325,7 +328,7 @@ def generate_build_json(
         else:
             if contract_name == "<stdin>":
                 contract_name = contract_alias = "Vyper"
-            build_json[contract_alias] = vyper._get_unique_build_json(
+            build_json[unique_contract_alias] = vyper._get_unique_build_json(
                 output_evm,
                 path_str,
                 contract_alias,
@@ -333,7 +336,7 @@ def generate_build_json(
                 (0, len(source)),
             )
 
-        build_json[contract_alias].update(
+        build_json[unique_contract_alias].update(
             {
                 "abi": abi,
                 "ast": output_json["sources"][path_str]["ast"],

@@ -109,14 +109,14 @@ class _ProjectBase:
 
         for alias, data in build_json.items():
             if self._build_path is not None:
-                if alias == data["contractName"]:
+                #if alias == data["contractName"]:
                     # if the alias == contract name, this is a part of the core project
-                    path = self._build_path.joinpath(f"contracts/{alias}.json")
-                else:
-                    # otherwise, this is an artifact from an external dependency
-                    path = self._build_path.joinpath(f"contracts/dependencies/{alias}.json")
-                    for parent in list(path.parents)[::-1]:
-                        parent.mkdir(exist_ok=True)
+                path = self._build_path.joinpath(f"contracts/{alias}.json")
+                # else:
+                #     # otherwise, this is an artifact from an external dependency
+                #     path = self._build_path.joinpath(f"contracts/dependencies/{alias}.json")
+                #     for parent in list(path.parents)[::-1]:
+                #         parent.mkdir(exist_ok=True)
                 with path.open("w") as fp:
                     json.dump(data, fp, sort_keys=True, indent=2, default=sorted)
 
